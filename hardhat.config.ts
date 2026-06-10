@@ -1,0 +1,387 @@
+require('@babel/register');
+require('core-js');
+require('regenerator-runtime/runtime');
+import * as dotenv from 'dotenv';
+import '@nomicfoundation/hardhat-toolbox';
+// import 'hardhat-tracer';
+import 'hardhat-docgen';
+// import 'solidity-coverage';
+import { HardhatUserConfig } from 'hardhat/config';
+// import '@matterlabs/hardhat-zksync-deploy';
+// import '@matterlabs/hardhat-zksync-solc';
+// import '@matterlabs/hardhat-zksync-verify';
+
+
+dotenv.config();
+
+const PRIVATE_KEY = process.env.WALLET_PRIVATE_KEY
+  ? '0x' + process.env.WALLET_PRIVATE_KEY
+  : undefined;
+
+
+const config: HardhatUserConfig = {
+  solidity: {
+    version: '0.8.12',
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 1000000,
+      },
+    },
+  },
+  // zksolc: {
+  //   version: '1.5.6', // Uses latest available in https://github.com/matter-labs/zksolc-bin/
+  //   settings: {},
+  // },
+  networks: {
+    // zkSyncEra: {
+    //   zksync: true,
+    //   url: 'https://mainnet.era.zksync.io',
+    //   ethNetwork: 'mainnet',
+    //   verifyURL: 'https://zksync2-mainnet-explorer.zksync.io/contract_verification',
+    // },
+    // abstract: {
+    //   zksync: true,
+    //   url: 'https://rpc.zerion.io/v1/abstract',
+    //   ethNetwork: 'mainnet',
+    //   verifyURL: 'https://api.abscan.org/api',
+    // },
+    // zero: {
+    //   zksync: true,
+    //   url: 'https://rpc.zerion.io/v1/zero',
+    //   ethNetwork: 'mainnet',
+    // },
+    hardhat: {
+      forking: {
+        url: 'https://rpc.zerion.io/v1/ethereum'
+      },
+      initialBaseFeePerGas: 0,
+      blockGasLimit: 10000000,
+      gas: 10000000,
+      allowUnlimitedContractSize: true,
+      accounts: [
+        {
+          privateKey: '0xbe5d6e330de6c44c137f8fb45fa44dada079fb8bc29d290cadd8f882035dd189',
+          balance: '10000000000000000000000',
+        },
+        {
+          privateKey: '0x473acc210edb35998de9dc65495bafbf0a3804950482cd2b48af7bba7046d7de',
+          balance: '10000000000000000000000',
+        },
+        {
+          privateKey: '0x473acc210edb35998de9dc65495bafbf0a3804950482cd2b48af7bba7046d7df',
+          balance: '10000000000000000000000',
+        },
+      ]
+    },
+    'truffle-dashboard': {
+      url: 'http://localhost:24012/rpc',
+      timeout: 400000,
+    },
+    arbitrumOne: {
+      url: 'https://rpc.zerion.io/v1/arbitrum',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    aurora: {
+      url: 'https://rpc.zerion.io/v1/aurora',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    avalanche: {
+      url: 'https://rpc.zerion.io/v1/avalanche',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    base: {
+      url: 'https://rpc.zerion.io/v1/base',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    berachain: {
+      url: 'https://rpc.zerion.io/v1/berachain',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    blast: {
+      url: 'https://rpc.zerion.io/v1/blast',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    bsc: {
+      url: 'https://rpc.zerion.io/v1/binance-smart-chain',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    celo: {
+      url: 'https://rpc.zerion.io/v1/celo',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    gnosis: {
+      url: 'https://rpc.zerion.io/v1/xdai',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    hyperevm: {
+      url: 'https://rpc.zerion.io/v1/hyperevm',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    ink: {
+      url: 'https://rpc.zerion.io/v1/ink',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    katana: {
+      url: 'https://rpc.zerion.io/v1/katana',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    linea: {
+      url: 'https://rpc.zerion.io/v1/linea',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    mainnet: {
+      url: 'https://rpc.zerion.io/v1/ethereum',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    mantle: {
+      url: 'https://rpc.zerion.io/v1/mantle',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    megaeth: {
+      url: 'https://rpc.zerion.io/v1/megaeth',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    mode: {
+      url: 'https://rpc.zerion.io/v1/mode',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    monad: {
+      url: 'https://rpc.zerion.io/v1/monad',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    opera: {
+      url: 'https://rpc.zerion.io/v1/fantom',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    optimisticEthereum: {
+      url: 'https://rpc.zerion.io/v1/optimism',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    polygon: {
+      url: 'https://rpc.zerion.io/v1/polygon',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    'polygon-zkevm': {
+      url: 'https://rpc.zerion.io/v1/polygon-zkevm',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    plasma: {
+      url: 'https://rpc.zerion.io/v1/plasma',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    scroll: {
+      url: 'https://rpc.zerion.io/v1/scroll',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    somnia: {
+      url: 'https://rpc.zerion.io/v1/somnia',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    soneium: {
+      url: 'https://rpc.zerion.io/v1/soneium',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    sonic: {
+      url: 'https://rpc.zerion.io/v1/sonic',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    taiko: {
+      url: 'https://rpc.zerion.io/v1/taiko',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    unichain: {
+      url: 'https://rpc.zerion.io/v1/unichain',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    xlayer: {
+      url: 'https://rpc.zerion.io/v1/okbchain',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    zora: {
+      url: 'https://rpc.zerion.io/v1/zora',
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+  },
+  etherscan: {
+    enabled: process.env.BLOCK_EXPLORER_API_KEY ? process.env.BLOCK_EXPLORER_API_KEY.toString() !== 'no' : true,
+    apiKey: process.env.BLOCK_EXPLORER_API_KEY ? process.env.BLOCK_EXPLORER_API_KEY.toString() : '',
+    customChains: [
+      {
+        network: 'abstract',
+        chainId: 2741,
+        urls: {
+          apiURL: 'https://api.etherscan.io/v2/api?chainid=2741',
+          browserURL: 'https://abscan.org'
+        }
+      },
+      {
+        network: 'berachain',
+        chainId: 80094,
+        urls: {
+          apiURL: 'https://api.etherscan.io/v2/api?chainid=80094',
+          browserURL: 'https://berascan.com'
+        }
+      },
+      {
+        network: 'blast',
+        chainId: 81457,
+        urls: {
+          apiURL: 'https://api.etherscan.io/v2/api?chainid=81457',
+          browserURL: 'https://blastscan.io'
+        },
+      },
+      {
+        network: 'celo',
+        chainId: 42220,
+        urls: {
+          apiURL: 'https://api.etherscan.io/v2/api?chainid=42220',
+          browserURL: 'https://celoscan.io'
+        },
+      },
+      {
+        network: 'katana',
+        chainId: 747474,
+        urls: {
+          apiURL: 'https://api.etherscan.io/v2/api?chainid=747474',
+          browserURL: 'https://katanascan.com'
+        },
+      },
+      {
+        network: 'linea',
+        chainId: 59144,
+        urls: {
+          apiURL: 'https://api.etherscan.io/v2/api?chainid=59144',
+          browserURL: 'https://lineascan.build'
+        },
+      },
+      {
+        network: 'mantle',
+        chainId: 5000,
+        urls: {
+          apiURL: 'https://api.etherscan.io/v2/api?chainid=5000',
+          browserURL: 'https://mantlescan.xyz'
+        }
+      },
+      {
+        network: 'scroll',
+        chainId: 534352,
+        urls: {
+          apiURL: 'https://api.etherscan.io/v2/api?chainid=534352',
+          browserURL: 'https://scrollscan.com'
+        },
+      },
+      {
+        network: 'sonic',
+        chainId: 146,
+        urls: {
+          apiURL: 'https://api.etherscan.io/v2/api?chainid=146',
+          browserURL: 'https://sonicscan.org'
+        }
+      },
+      {
+        network: 'taiko',
+        chainId: 167000,
+        urls: {
+          apiURL: 'https://api.etherscan.io/v2/api?chainid=167000',
+          browserURL: 'https://taikoscan.io'
+        }
+      },
+    ],
+  },
+  blockscout: {
+    enabled: process.env.BLOCK_EXPLORER_API_KEY ? process.env.BLOCK_EXPLORER_API_KEY.toString() === 'no' : false,
+    customChains: [
+      {
+        network: 'hyperevm',
+        chainId: 999,
+        urls: {
+          apiURL: 'https://www.hyperscan.com/api',
+          browserURL: 'https://www.hyperscan.com'
+        }
+      },
+      {
+        network: 'megaeth',
+        chainId: 4326,
+        urls: {
+          apiURL: 'https://megaeth.blockscout.com/api',
+          browserURL: 'https://megaeth.blockscout.com'
+        }
+      },
+      {
+        network: 'mode',
+        chainId: 34443,
+        urls: {
+          apiURL: 'https://explorer.mode.network/api',
+          browserURL: 'https://explorer.mode.network'
+        }
+      },
+      {
+        network: 'plasma',
+        chainId: 9745,
+        urls: {
+          apiURL: 'https://api.routescan.io/v2/network/mainnet/evm/9745/etherscan/api',
+          browserURL: 'https://plasmascan.to'
+        }
+      },
+      {
+        network: 'somnia',
+        chainId: 5031,
+        urls: {
+          apiURL: 'https://mainnet.somnia.w3us.site/api',
+          browserURL: 'https://explorer.somnia.network'
+        }
+      },
+      {
+        network: 'soneium',
+        chainId: 1868,
+        urls: {
+          apiURL: 'https://soneium.blockscout.com/api',
+          browserURL: 'https://soneium.blockscout.com'
+        }
+      },
+      {
+        network: 'unichain',
+        chainId: 130,
+        urls: {
+          apiURL: 'https://unichain.blockscout.com/api',
+          browserURL: 'https://unichain.blockscout.com'
+        }
+      },
+      {
+        network: 'xlayer',
+        chainId: 196,
+        urls: {
+          apiURL: 'https://www.oklink.com/api/v5/explorer/contract/verify-source-code-plugin/XLAYER',
+          browserURL: 'https://www.okx.com/web3/explorer/xlayer'
+        }
+      },
+      {
+        network: 'zero',
+        chainId: 543210,
+        urls: {
+          apiURL: 'https://zero-network.calderaexplorer.xyz/verification/contract_verification',
+          browserURL: 'https://zero-network.calderaexplorer.xyz'
+        }
+      },
+      {
+        network: 'zora',
+        chainId: 7777777,
+        urls: {
+          apiURL: 'https://api.routescan.io/v2/network/mainnet/evm/7777777/etherscan',
+          browserURL: 'https://zorascan.xyz'
+        }
+      },
+    ],
+  },
+  docgen: {
+    path: './docs',
+    clear: false,
+    runOnCompile: false,
+  },
+  mocha: {
+    timeout: '200000',
+  },
+};
+
+export default config;

@@ -15,73 +15,87 @@
 //
 // SPDX-License-Identifier: LGPL-3.0-only
 
-pragma solidity 0.7.3;
-pragma experimental ABIEncoderV2;
+pragma solidity 0.8.12;
+
+import { ActionType, AmountType, PermitType, SwapType } from "./Enums.sol";
+
+//=============================== Adapters Managers Structs ====================================
+
+// The struct consists of adapter name and address
+struct AdapterNameAndAddress {
+    bytes32 name;
+    address adapter;
+}
+
+// The struct consists of token and its adapter name
+struct TokenAndAdapterName {
+    address token;
+    bytes32 name;
+}
+
+// The struct consists of hash (hash of token's bytecode or address) and its adapter name
+struct HashAndAdapterName {
+    bytes32 hash;
+    bytes32 name;
+}
 
 // The struct consists of TokenBalanceMeta structs for
-// (base) token and its underlying tokens (if any).
+// (base) token and its underlying tokens (if any)
 struct FullTokenBalance {
     TokenBalanceMeta base;
     TokenBalanceMeta[] underlying;
 }
 
-// The struct consists of TokenBalance struct
-// with token address and absolute amount
-// and ERC20Metadata struct with ERC20-style metadata.
-// NOTE: 0xEeee...EEeE address is used for ETH.
+// The struct consists of TokenBalance struct with token address and absolute amount
+// and ERC20Metadata struct with ERC20-style metadata
+// 0xEeee...EEeE address is used for Ether
 struct TokenBalanceMeta {
     TokenBalance tokenBalance;
     ERC20Metadata erc20metadata;
 }
 
-// The struct consists of ERC20-style token metadata.
+// The struct consists of ERC20-style token metadata
 struct ERC20Metadata {
     string name;
     string symbol;
     uint8 decimals;
 }
 
-// The struct consists of protocol adapter's name
-// and array of TokenBalance structs
-// with token addresses and absolute amounts.
+// The struct consists of protocol adapter's name and array of TokenBalance structs
+// with token addresses and absolute amounts
 struct AdapterBalance {
-    bytes32 protocolAdapterName;
+    bytes32 name;
     TokenBalance[] tokenBalances;
 }
 
-// The struct consists of token address
-// and its absolute amount (may be negative).
+// The struct consists of protocol adapter's name and array of supported tokens' addresses
+struct AdapterTokens {
+    bytes32 name;
+    address[] tokens;
+}
+
+// The struct consists of token address and its absolute amount (may be negative)
 // 0xEeee...EEeE is used for Ether
 struct TokenBalance {
     address token;
     int256 amount;
 }
 
-// The struct consists of token address,
-// and price per full share (1e18).
-// 0xEeee...EEeE is used for Ether
-struct Component {
-    address token;
-    int256 rate;
-}
-
 //=============================== Interactive Adapters Structs ====================================
 
-// The struct consists of array of actions, array of inputs,
-// fee, array of required outputs, account,
-// and salt parameter used to protect users from double spends.
-struct TransactionData {
-    Action[] actions;
-    TokenAmount[] inputs;
-    Fee fee;
-    AbsoluteTokenAmount[] requiredOutputs;
+// The struct consists of swap type, fee descriptions (share & beneficiary), account address,
+// and Caller contract address with call data used for the call
+struct SwapDescription {
+    SwapType swapType;
+    Fee protocolFee;
+    Fee marketplaceFee;
     address account;
-    uint256 salt;
+    address caller;
+    bytes callerCallData;
 }
 
-// The struct consists of name of the protocol adapter,
-// action type, array of token amounts,
-// and some additional data (depends on the protocol).
+// The struct consists of name of the protocol adapter, action type,
+// array of token amounts, and some additional data (depends on the protocol)
 struct Action {
     bytes32 protocolAdapterName;
     ActionType actionType;
@@ -89,8 +103,20 @@ struct Action {
     bytes data;
 }
 
-// The struct consists of token address
-// its amount and amount type.
+// The struct consists of token address, its amount, and amount type,
+// as well as permit type and calldata.
+struct Input {
+    TokenAmount tokenAmount;
+    Permit permit;
+}
+
+// The struct consists of permit type and call data
+struct Permit {
+    PermitType permitType;
+    bytes permitCallData;
+}
+
+// The struct consists of token address, its amount, and amount type
 // 0xEeee...EEeE is used for Ether
 struct TokenAmount {
     address token;
@@ -98,21 +124,27 @@ struct TokenAmount {
     AmountType amountType;
 }
 
-// The struct consists of fee share
-// and beneficiary address.
+// The struct consists of fee share and beneficiary address
 struct Fee {
     uint256 share;
     address beneficiary;
 }
 
-// The struct consists of token address
-// and its absolute amount.
+// The struct consists of deadline and signature
+struct ProtocolFeeSignature {
+    uint256 deadline;
+    bytes signature;
+}
+
+// The struct consists of salt and signature
+struct AccountSignature {
+    uint256 salt;
+    bytes signature;
+}
+
+// The struct consists of token address and its absolute amount
 // 0xEeee...EEeE is used for Ether
 struct AbsoluteTokenAmount {
     address token;
-    uint256 amount;
+    uint256 absoluteAmount;
 }
-
-enum ActionType { None, Deposit, Withdraw }
-
-enum AmountType { None, Relative, Absolute }
